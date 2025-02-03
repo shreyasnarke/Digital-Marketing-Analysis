@@ -1,0 +1,12 @@
+Business Problem :
+
+A multinational e-commerce company is running multiple digital marketing campaigns across various platforms like Google Ads, Facebook Ads, and YouTube Ads. They have collected data on different types of ad formats (Display ads, Overlay ads, Skippable ads, Non-skippable ads, and Bumper ads) along with metrics such as average pages visited, average time on site, impressions, clicks, conversions, quantity sold, unit cost price, unit sale price, final cost price, and final sale price.
+
+Objective:
+
+Maximize the total revenue generated from the digital marketing campaigns across all platforms and ad formats.
+
+
+Constraints:
+
+Budget Constraint: The total expenditure on digital marketing campaigns cannot exceed a predefined budget limit.
