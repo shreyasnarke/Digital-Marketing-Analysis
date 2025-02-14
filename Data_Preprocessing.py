@@ -11,8 +11,12 @@ print(df.info())
 #Step2:Typecasting
 df['Date']=pd.to_datetime(df['Date'])
 
+# Convert Achieved to Percentage
+df["Target Achieved (%)"] = ((df["Quantity Sold"] / df["Sales Target"]) * 100).astype(int)
+df.drop(columns=["Target Achieved (%)"], inplace=True)
+
 #Removes '$' sign and convert currency-related columns to float
-remove_dollar_cols=['Unit Cost Price','Unit Sale Price','Final Cost Price','Final Sale Price']
+remove_dollar_cols=['Unit Cost Price','Unit Sale Price','Final Cost Price','Final Sale Price(Revenue)']
 df[remove_dollar_cols]=df[remove_dollar_cols].replace('[\$]','',regex=True).astype(float)
 
 #Convert Percentage columns to proper float values
@@ -28,7 +32,7 @@ df=df.drop_duplicates()
 
 #check balance 
 print(df['Platform'].value_counts())
-#print(df['Conversions'].value.counts())
+print(df['Conversions'].value.counts())
 
 # Apply SMOTE only for classification tasks (e.g., conversions)
 #smote=SMOTE()
@@ -67,3 +71,32 @@ winsor_gaussian=Winsorizer(capping_method='gaussian',tail='both',fold=3,variable
 df_winsor=winsor_gaussian.fit_transform(df)
 sns.boxplot(y=df_winsor['Final Cost Price'])
 plt.show()
+
+##Discretization
+#df['Performance Category']=pd.cut(df['Target_Achieved (%)'],bins=3,labels=['Low','Medium','High'])
+#print(df['Performance Category'])
+
+#from sklearn.preprocessing import LabelEncoder
+#categorical_cols=['Ad Campaign','Platform']
+#encoder=LabelEncoder()
+#for col in categorical_cols:
+#    df[col]=encoder.fit_transform(df[col])
+#print(col)
+
+#Standardization & Scaling
+#numeric_cols=['Revenue','Profit']
+#from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
+#scaler=StandardScaler()
+#numeric_cols=df.select_dtypes(include=[np.number]).columns
+#df[numeric_cols] = scaler.fit_transform(df[numeric_cols])
+
+#Data Transformation
+#from scipy.stats import boxcox
+#apply box-cox transformation to positively skewd columns
+#skewed_cols=['Clicks','Revenue','Profit']
+#for col in skewed_cols:
+#    df[col],_=boxcox(df[col]+1) #Adding 1 to avoid log(0)
+#print(df.head())    
+
+#df.to_excel("output.xlsx", index=False, sheet_name="SheetPython")  # Requires `openpyxl` or `xlsxwriter`
+#df.to_csv("FinalOutput.csv", index=False)  # Requires `openpyxl` or `xlsxwriter`

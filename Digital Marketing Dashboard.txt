@@ -3,10 +3,52 @@ Business Problem :
 A multinational e-commerce company is running multiple digital marketing campaigns across various platforms like Google Ads, Facebook Ads, and YouTube Ads. They have collected data on different types of ad formats (Display ads, Overlay ads, Skippable ads, Non-skippable ads, and Bumper ads) along with metrics such as average pages visited, average time on site, impressions, clicks, conversions, quantity sold, unit cost price, unit sale price, final cost price, and final sale price.
 
 Objective:
-
 Maximize the total revenue generated from the digital marketing campaigns across all platforms and ad formats.
 
 
 Constraints:
 
 Budget Constraint: The total expenditure on digital marketing campaigns cannot exceed a predefined budget limit.
+
+
+ Dynamic Query to Round All Numeric Columns
+sql
+Copy code
+SELECT CONCAT('UPDATE output SET ', 
+              GROUP_CONCAT(CONCAT('`', column_name, '` = ROUND(`', column_name, '`, 2)') SEPARATOR ', '), 
+              ' WHERE 1;') 
+INTO @sql_query
+FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'output' 
+AND DATA_TYPE IN ('decimal', 'double', 'float', 'numeric');
+
+PREPARE stmt FROM @sql_query;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+🔹 How This Works
+Fetches all numeric columns (decimal, double, float, numeric) from the output table.
+Generates a dynamic UPDATE statement that rounds each of these columns to 2 decimal places.
+Stores the query in a variable (@sql_query).
+Executes the query using PREPARE stmt to apply the rounding.
+Cleans up the prepared statement using DEALLOCATE PREPARE.
+🎯 Why Use This?
+✔ No need to manually specify column names—it automatically applies rounding to all numeric columns.
+✔ Ensures consistency across all float/double/decimal fields.
+✔ Saves time when working with large datasets.
+
+🚀 Example Output Query (Auto-Generated)
+The above query dynamically generates and runs a query like this:
+
+sql
+Copy code
+UPDATE output 
+SET 
+    `Revenue` = ROUND(`Revenue`, 2),
+    `Profit` = ROUND(`Profit`, 2),
+    `Ad Spend` = ROUND(`Ad Spend`, 2),
+    `CPI` = ROUND(`CPI`, 2),
+    `CPC` = ROUND(`CPC`, 2),
+    `ROAS(Return on Ad Spend)` = ROUND(`ROAS(Return on Ad Spend)`, 2),
+    `Target_Achieved (%)` = ROUND(`Target_Achieved (%)`, 2)
+WHERE 1;
+Try it and let me know if you need any modifications! 🚀
